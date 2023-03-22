@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "FunFileSave.WinUI (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "FunFileSave.WinUI (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
