@@ -169,6 +169,8 @@ namespace FunFileSave.WinUI
             // This should produce a valid png with none of the contents left.
         }
 
+
+
         /// <summary>
         /// Get Resource File Content via FileName.
         /// </summary>
@@ -184,6 +186,56 @@ namespace FunFileSave.WinUI
             }
 
             return assembly.GetManifestResourceStream(resourceName);
+        }
+
+        private async void shaggarTest_Click(object sender, RoutedEventArgs e)
+        {
+            // 80 kb .png file
+            var og = GetResourceFileContent("Icons.dotnet-bot.png");
+            var filePicker = new FileSavePicker();
+
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+
+            WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
+
+            filePicker.FileTypeChoices.Add("PNG", new List<string>() { ".png" });
+
+            // open windows file picker.
+            var file = await filePicker.PickSaveFileAsync();
+
+            // Create a byte array of the original file.
+            using var memoryStream = new MemoryStream();
+            og.CopyTo(memoryStream);
+            var byteArray = memoryStream.ToArray();
+
+            // Write it out using the StorageFile and byte array.
+            await FileIO.WriteBytesAsync(file, byteArray);
+
+            // This should result in the correct 80kb file.
+        }
+
+        private async void shaggarTest_Click2(object sender, RoutedEventArgs e)
+        {
+            // 80 kb .png file
+            var og = GetResourceFileContent("Icons.dotnet-bot.png");
+            var filePicker = new FileSavePicker();
+
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+
+            WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hwnd);
+
+            filePicker.FileTypeChoices.Add("PNG", new List<string>() { ".png" });
+
+            // open windows file picker.
+            var file = await filePicker.PickSaveFileAsync();
+
+            using var memoryStream = new MemoryStream();
+            og.CopyTo(memoryStream);
+
+            // Write it out using the StorageFile and IBuffer.
+            await FileIO.WriteBufferAsync(file, memoryStream.GetWindowsRuntimeBuffer());
+
+            // This should result in the correct 80kb file.
         }
     }
 }
